@@ -1,44 +1,50 @@
 # Language Translator
 
-A simple, lightweight language translator web app built to test out Flask API integrations and explore client-side asynchronous UI states.
+A lightweight, single-page translation web app built to sharpen my Flask API integration skills and practice client-side asynchronous UI states.
 
-**🔗 Live Demo:** TODO: Add your PythonAnywhere or deployment link here
-**📅 Built:** Summer 2026
+**🔗 Live Demo:** [https://ter4by2e.eu.pythonanywhere.com/]  
+**📅 Built:** Summer 2025
 
 ---
 
 ## What It Does
 
-The project provides a clean, single-page interface for text translation across multiple languages. Users can input text, let the app automatically detect the source language, choose a target language, and view translations instantly. It also supports text-to-speech audio playback of the translated output, basic sample text quick-actions, and a dynamic dark/light/system theme switcher.
+This project is a clean, interactive translator that takes user text, communicates with a backend translation API asynchronously, and renders the result instantly without a clunky full-page reload. It automatically tracks your character count, supports quick-action sample texts, includes an optional "translate-as-you-type" mode, and comes with a full Bootstrap dark/light theme toggle. 
 
-I built this specifically as a learning project to sharpen my Python backend skills, understand how Flask handles asynchronous JSON routing, and practice clean API consumption.
+The main reason I built this was to push my Flask skills forward—specifically figuring out how to handle incoming JSON request bodies on the backend and make clean outbound HTTP requests to external APIs using Python.
 
 ---
 
 ## Tech Stack
 
-* **Backend & API Routing:** Flask (Python)
-* **Frontend UI:** HTML5, CSS3 (Custom styles with theme toggles), JavaScript (Fetch API)
-* **Translation & TTS Engines:** `deep-translator` (Google Translator backend) and `gTTS` (Google Text-to-Speech)
-* **Hosting:** PythonAnywhere (WSGI configuration)
+* **Backend Framework:** Flask (Python)
+* **Frontend UI:** HTML5, Bootstrap 5 (Styling & Layout), Vanilla JavaScript (Fetch API)
+* **Outbound HTTP Client:** `requests` library
+* **Configuration Management:** `python-dotenv`
 
 ---
 
 ## Features
 
-* **Auto-Language Detection:** Users don't need to guess the input language; the backend automatically identifies the source text profile.
-* **Asynchronous Translating:** Leverages JavaScript `Fetch` calls to hit Flask routes (`/translate`) without forcing a clunky full-page browser refresh.
-* **Instant Audio Synthesis:** Synthesizes translated strings into downloadable/playable MP3 playback queues directly on the frontend using standard HTML5 audio elements.
-* **Dynamic Client-Side Themes:** Includes a clean UI mode toggle supporting explicit **Light**, **Dark**, or **Auto** (matching the host operating system's prefers-color-scheme).
-* **Translate-as-you-Type Toggle:** An optional mode that hooks text input elements to real-time events, firing minor debounced API updates instead of waiting for an explicit click.
+### 🎨 Custom UI Themes
+[PLACEHOLDER: Add a screenshot here showing your app with the Dark/Light theme toggle active]
+Users can toggle between Light, Dark, or System Auto themes dynamically. The system hooks into Bootstrap’s data attributes to swap colors on the fly without refreshing the page.
+
+### 🌐 Auto-Language Detection
+The frontend features a "Detect language" flag. When checked, it lets the backend query string handle identifying what language the text was originally written in before translating it.
+
+### ⚡ Translate-as-you-Type
+An option in the settings panel allows real-time asynchronous translating. The app watches the text area and updates the output box dynamically as the user types, rather than forcing them to wait and click an explicit "Translate" button.
 
 ---
 
 ## What I Learned Building It
 
-This was an excellent exercise in balancing frontend JavaScript lifecycles with standard Python backend rules. 
+This was a massive lesson in linking frontend JavaScript execution lifecycles with standard Python backend routing rules. 
 
-I learned how Flask interprets explicit POST body structures via `request.get_json()` and how crucial it is to return properly formatted stringified payloads using `jsonify()`. On the frontend, wrestling with async states taught me how to handle UI feedback states gracefully (like disabling inputs and modifying button text to "Translating..." so users don't break the active execution loops by spamming requests).
+I had to map out how to grab data sent via JS `fetch()` on the Python side using `request.get_json()`, parse out specific keys safely with `.get()`, and ensure that my backend always spat back a proper, stringified JSON payload using Flask's native `jsonify()`. 
+
+On the frontend, writing the asynchronous `translateText` function taught me how crucial UI loading states are. Setting the text box status to `"Translating..."` while waiting for the API to respond keeps the user experience seamless and obvious.
 
 ---
 
@@ -46,35 +52,24 @@ I learned how Flask interprets explicit POST body structures via `request.get_js
 
 ### Credential Handling
 
-* **Where do API keys/secrets live in this code?** Right now, there are actually no explicit API credentials hardcoded in the codebase because it relies entirely on free, unauthenticated scraping wrappers via `deep-translator` and `gTTS`. If I were to switch this to official paid production routes (like Google Cloud Translation API or DeepL API), those keys would need to live securely in environment variables or a `.env` file rather than being committed.
+* **Where do API keys/secrets live in this code?** They live completely outside the repository code. I used `python-dotenv` to read `RAPID_API_KEY`, `RAPID_API_HOST`, and the base `URL` from a local, uncommitted `.env` file. The values are pulled at runtime using Python’s `os.getenv()`.
   
-* **If someone cloned this repo, could they accidentally commit secrets?** Because no keys are currently utilized, a standard clone won't leak private tokens. However, the repository lacks a `.gitignore` template. If I transition to an authenticated corporate API later, I risk accidentally pushing a `.env` file or Python cache files (`__pycache__/`) directly to GitHub.
+* **If someone cloned this repo, could they accidentally commit secrets?** Yes, they easily could. While the code reads from `os.getenv()`, there isn't a `.gitignore` file included in this directory. If a developer sets up a local `.env` file or generates a `.pyc` Python cache directory, they risk accidentally bundling those private keys into a standard `git commit` and pushing them straight to public GitHub.
   
-* **If this deployed to production, how would you inject credentials securely?** Instead of editing files directly on a remote server like PythonAnywhere, I would utilize the environment variable dashboard provided by the host (or read from a secure configuration wrapper initialized at the WSGI entry level).
+* **If this deployed to production, how would you inject credentials securely?** Instead of uploading or writing local `.env` files on the host server (like PythonAnywhere or Render), I would inject these values directly via the hosting provider's environment variables dashboard or secrets manager console, completely isolating production environment keys from development.
 
 ### Access Rules & Permissions
 
-* **Who can access this app right now?** Anyone on the internet can hit the public routes if it's running live on PythonAnywhere. No user registration walls or login portals exist.
+* **Who can access this app right now?** Right now, anyone on the internet can hit the application routes if it's running live. There are no authentication walls, no login portals, and no API user sessions.
   
-* **Should there be rate limiting?** **Yes, absolutely.** Because the application uses public endpoints without auth limits, a simple automated bot script could endlessly loop against the `/translate` route. This would quickly cause Google's endpoints to flag my server IP for scraping abuse, breaking the application for all real human visitors. I need to plug in a tool like `Flask-Limiter` to restrict transactions per IP address.
+* **Should there be rate limiting?** **Yes, desperately.** Because the `/translate` route forwards requests directly to RapidAPI, an attacker could easily target this open endpoint with a script loop. Since it doesn't limit inbound traffic, someone could rack up my API usage costs or trigger an upstream IP block within seconds. I need to drop in a library like `Flask-Limiter` to cap requests per IP.
   
-* **If users can create accounts or save state, what access controls exist?** There is no database engine hooked up and no concept of sessions. Every API transaction is strictly stateless—text enters, text leaves, and the server instantly forgets it happened. No data leak between separate human browser sessions is possible.
+* **If users can create accounts or save state, what access controls exist?** There is no database or storage layer connected. Every single request processed through the `/translate` route is stateless. The backend processes the string, returns it, and instantly forgets it. There is zero risk of data leaking between completely separate human browser sessions.
 
 ### Input Validation
 
-* **What user inputs does this app accept?** The app consumes simple text strings through the main input window, string identifiers for the target/source language selectors, and raw interaction triggers for the quick-sample text boxes.
+* **What user inputs does this app accept?** The application consumes text from the source text area along with the selected values from the language `<select>` dropdown tables.
   
-* **What happens if someone sends malicious input?** If someone sends a massive chunk of text containing millions of characters, the server might hang or time out trying to process it. Furthermore, sending script tags or raw structural syntax might break downstream string rendering if the frontend elements aren't escaping text data properly.
+* **What happens if someone sends malicious input?** If a user sends a massive payload (e.g., millions of characters), my outbound `requests.post()` call has a strict 5-second `timeout=5` safety block, which prevents the server from hanging indefinitely. However, passing unvalidated text strings downstream means a corrupted payload could trigger an application crash.
   
-* **Are you sanitizing or validating inputs before passing them to the translation API or database?** The current setup passes raw string data directly to the translation libraries with zero filtration or validation checks. While JavaScript's `.innerText` assignment shields the interface from standard client-side DOM XSS loops, the backend itself is fully exposed to oversized structural payloads.
-
----
-
-## Next Steps
-
-To make this production-ready from a design and security standpoint, I need to knock out the following steps:
-
-- [ ] Add a comprehensive `.gitignore` file to isolate system cache files (`__pycache__/`, `.DS_Store`) and prepare for eventual secrets file usage.
-- [ ] Install and configure **Flask-Limiter** to prevent automated scrapers from spamming the backend API routes and triggering upstream IP bans.
-- [ ] Implement robust character length limits and string truncation checks inside the Flask endpoints to safely catch bloated payloads before processing them.
-- [ ] Standardize try/except handling blocks to gracefully return clean, structured JSON error codes (`500` status flags) back to the UI instead of risking trace errors leaking into frontend alerts.
+* **

@@ -101,4 +101,4 @@ Building this project gave me practical experience with several backend developm
 - [ ] Introduce translation caching to reduce duplicate API calls and improve response times.
 - [ ] Store recent translations locally for easier access and a better user experience.
 - [ ] Expand automated testing for backend routes and API failure scenarios.
-```
+

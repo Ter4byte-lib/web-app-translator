@@ -50,7 +50,7 @@ The frontend communicates with the Flask backend using the Fetch API and `async`
 Users can instantly switch between **Light**, **Dark**, and **System** themes. Bootstrap's `data-bs-theme` attribute is updated dynamically without interrupting the current interface state.
 
 <p align="center">
-  <img src="assets/themes.png" width="900" alt="light mode interface">
+  <img src="assets/themes.png" width="900" alt="dark mode interface">
 </p>
 
 ### ♻️ Reusable Language Templates

@@ -11,7 +11,11 @@
 
 **Web Translator** is a Flask-based web application that translates text between languages through a secure server-side API broker.
 
-Rather than exposing third-party credentials to the browser, translation requests are routed through a Python backend before being forwarded to the external service. The project was built to strengthen my understanding of backend architecture, asynchronous client-server communication, and secure configuration management.
+Rather than exposing third-party API credentials to the browser, all translation requests are routed through a Python backend before being forwarded to the external service. The project was built to strengthen my understanding of backend architecture, asynchronous client-server communication, and secure configuration management.
+
+<p align="center">
+  <img src="assets/home.png" width="900" alt="Web Translator interface">
+</p>
 
 ---
 
@@ -33,16 +37,12 @@ Rather than exposing third-party credentials to the browser, translation request
 
 When the source language is set to **Auto Detect**, the backend forwards the request to the translation service, allowing it to identify the input language automatically.
 
-<p align="center">
-  <img src="assets/auto-detect.png" width="700"/>
-</p>
-
 ### ⚡ Asynchronous Translation
 
-The frontend communicates with Flask using the Fetch API and `async`/`await`, allowing translations to happen without refreshing the page while displaying live status messages such as **"Detecting language..."** and **"Translating..."**.
+The frontend communicates with the Flask backend using the Fetch API and `async`/`await`, allowing translations to happen without refreshing the page while displaying live status messages such as **"Detecting language..."** and **"Translating..."**.
 
 <p align="center">
-  <img src="assets/translation.png" width="700"/>
+  <img src="assets/translating.png" width="900" alt="Translation in progress">
 </p>
 
 ### 🎨 Theme Switching
@@ -50,7 +50,7 @@ The frontend communicates with Flask using the Fetch API and `async`/`await`, al
 Users can instantly switch between **Light**, **Dark**, and **System** themes. Bootstrap's `data-bs-theme` attribute is updated dynamically without interrupting the current interface state.
 
 <p align="center">
-  <img src="assets/theme.png" width="700"/>
+  <img src="assets/themes.png" width="900" alt="Dark mode interface">
 </p>
 
 ### ♻️ Reusable Language Templates
@@ -73,11 +73,11 @@ Instead of communicating directly with RapidAPI, the browser sends requests to t
 
 ### Error Handling
 
-Outbound requests use `response.raise_for_status()` together with a five-second timeout to ensure failures are detected cleanly instead of allowing requests to hang indefinitely.
+Outbound requests use `response.raise_for_status()` together with a five-second timeout to detect failures cleanly rather than allowing requests to hang indefinitely.
 
 ### Stateless Request Processing
 
-Each translation request is processed independently and is not persisted after the response is returned. The backend simply receives the text, requests a translation from the external service, and sends the result back to the client.
+Each translation request is processed independently and is not persisted after the response is returned. The backend receives the text, requests a translation from the external service, and immediately returns the result to the client.
 
 ---
 
@@ -87,7 +87,7 @@ Building this project gave me practical experience with several backend developm
 
 - Designing Flask routes that act as secure intermediaries between clients and external APIs.
 - Working with JSON payloads using `request.get_json()` and `jsonify()` to exchange structured data between JavaScript and Python.
-- Improving HTTP error handling by combining `response.raise_for_status()` with explicit request timeouts.
+- Improving HTTP error handling by combining `response.raise_for_status()` with explicit timeout values.
 - Separating configuration from application logic by loading sensitive values from environment variables instead of embedding them in source code.
 - Building asynchronous user interfaces using the Fetch API and `async`/`await` while keeping the page responsive.
 - Reducing duplicated template code by reusing shared Jinja components across multiple interface elements.
@@ -101,6 +101,4 @@ Building this project gave me practical experience with several backend developm
 - [ ] Introduce translation caching to reduce duplicate API calls and improve response times.
 - [ ] Store recent translations locally for easier access and a better user experience.
 - [ ] Expand automated testing for backend routes and API failure scenarios.
-
----
 ```

@@ -1,42 +1,6 @@
 # 🌐 Web Translator
 
-> A clean, responsive translation utility built to practice Python backend architecture and asynchronous API brokerage.
-
-**🔗 Live Demo:** [https://your-app-link.com](https://your-app-link.com)
-
----
-
-## 📝 About
-This project was built to polish my Python skills, specifically focusing on building a reliable backend that mediates between a user and an external API. The app uses **Flask** to manage requests, handling the translation logic server-side to ensure API credentials remain hidden and secure.
-
-## 🛠️ Tech Stack
-* **Backend:** `Flask` (Python)
-* **Frontend:** `HTML5`, `CSS3`, `JavaScript` (using `Fetch API`)
-* **API Integration:** `RapidAPI` Translation Services
-* **Configuration:** `python-dotenv` for secure environment management
-
-## 🧠 What I Learned (Python Polish)
-* **Backend "Brokerage":** I practiced decoupling the frontend from the API. The client never sees the API keys; the Flask backend acts as a secure broker, which is a fundamental pattern for production-ready apps.
-* **Robust Error Handling:** I moved beyond simple `try/except` blocks, implementing `response.raise_for_status()` and timeout configurations to ensure the app doesn't hang if the third-party service fails.
-* **Efficient Payload Handling:** I practiced working with JSON serialization and deserialization, ensuring the server-side routes correctly ingest request data and format outgoing API payloads.
-* **Clean Environment Management:** I implemented best practices by using `.env` files to store sensitive variables, ensuring the logic stays strictly separated from configuration.
-
-## ✨ Key Features
-* **Async UX:** The frontend uses `async/await` to keep the UI interactive (e.g., showing "Detecting language...") while waiting for server responses.
-* **Auto-Detect Logic:** A server-side integration that intelligently routes source-text detection to the translation engine.
-* **Clean Routing:** Used Flask’s request methods to create a modular structure that separates template rendering from API logic.
-
----
-
-## 🚀 Future Polish
-* [ ] **Cache Layer:** Implement local caching for frequent translations to reduce API latency and cost.
-* [ ] **History Logs:** Store previous translations in a simple local file or session storage.
-* [ ] **Validation:** Add stricter server-side length constraints to prevent excessive API load.
-
-
-# 🌐 Web Translator
-
-A clean, responsive translation utility built to practice Python backend architecture and asynchronous API brokerage.
+> A clean, responsive translation web application built to strengthen Python backend development skills and practice secure API integration.
 
 **🔗 Live Demo:** https://ter4by2e.eu.pythonanywhere.com/  
 **📅 Built:** Summer 2026
@@ -45,53 +9,98 @@ A clean, responsive translation utility built to practice Python backend archite
 
 ## 📝 About
 
-This project was built to polish my Python skills, specifically focusing on building a reliable backend that mediates between a user and an external API. Instead of forcing full-page browser refreshes, the app uses Flask to handle asynchronous routing server-side, ensuring third-party API credentials remain entirely hidden and secure.
+**Web Translator** is a Flask-based web application that translates text between languages through a secure server-side API broker.
+
+Rather than exposing third-party credentials to the browser, translation requests are routed through a Python backend before being forwarded to the external service. The project was built to strengthen my understanding of backend architecture, asynchronous client-server communication, and secure configuration management.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Backend:** Flask (Python)
-* **Frontend:** HTML5, Bootstrap 5, Vanilla JavaScript (Fetch API)
-* **API Integration:** RapidAPI Translation Services (`requests`)
-* **Configuration:** `python-dotenv` for secure environment management
+- **Backend:** `Flask` (Python)
+- **Frontend:** `HTML5`, `Bootstrap 5`, `Vanilla JavaScript`
+- **Client Communication:** `Fetch API`
+- **Translation API:** `RapidAPI`
+- **HTTP Client:** `requests`
+- **Configuration:** `python-dotenv`
+- **Hosting:** `PythonAnywhere`
 
 ---
 
-## 🧠 What I Learned (Python Polish)
+## ✨ Features
 
-* **Backend "Brokerage":** I practiced decoupling the frontend from the external API wrapper. The client environment never exposes the sensitive `RAPID_API_KEY` or custom header blocks; the Flask backend acts as a secure broker, which is a fundamental pattern for production-grade web apps.
-* **Robust Error Handling:** I moved beyond simple, generic `try/except` templates by implementing `response.raise_for_status()` and strict `timeout=5` parameter rules to make sure the core application worker thread doesn't hang indefinitely if the upstream RapidAPI route fails.
-* **Efficient Payload Handling:** I practiced working with JSON serialization and deserialization, using `request.get_json()` to correctly ingest data payloads on the server and `jsonify()` to pass structured translations cleanly back to the client interface.
-* **Clean Environment Management:** I implemented standard environment configurations by using `os.getenv()` paired with a local `.env` file to ensure the application logic stays strictly separated from private runtime values.
+### 🌐 Automatic Language Detection
 
----
+When the source language is set to **Auto Detect**, the backend forwards the request to the translation service, allowing it to identify the input language automatically.
 
-## ✨ Key Features
+<p align="center">
+  <img src="assets/auto-detect.png" width="700"/>
+</p>
 
-### 🎨 Theme Toggles
-Swaps between Light, Dark, or System Auto themes instantly. The JavaScript catches theme dropdown selections and updates Bootstrap’s `data-bs-theme` attribute on the fly without breaking UI state.
+### ⚡ Asynchronous Translation
 
-### ⚡ Async UX
-The frontend uses `async/await` and the Fetch API to keep the UI interactive. The script updates the translation panel to display `"Translating..."` (or `"Detecting language..."`) dynamically while waiting for background API tasks to resolve.
+The frontend communicates with Flask using the Fetch API and `async`/`await`, allowing translations to happen without refreshing the page while displaying live status messages such as **"Detecting language..."** and **"Translating..."**.
 
-### 🌐 Auto-Detect Logic
-A server-side implementation that routes an `"auto"` source-language parameter directly to the translation engine, letting the external API handle identifying what language the text was originally written in.
+<p align="center">
+  <img src="assets/translation.png" width="700"/>
+</p>
+
+### 🎨 Theme Switching
+
+Users can instantly switch between **Light**, **Dark**, and **System** themes. Bootstrap's `data-bs-theme` attribute is updated dynamically without interrupting the current interface state.
+
+<p align="center">
+  <img src="assets/theme.png" width="700"/>
+</p>
+
+### ♻️ Reusable Language Templates
+
+Both language dropdowns are populated from a shared Jinja template (`languages.html`), avoiding duplicated markup and making future maintenance simpler.
 
 ---
 
 ## 🔒 Security & Technical Reflection
 
-### Credential Handling
-Sensitive variables like `RAPID_API_KEY`, `RAPID_API_HOST`, and the base endpoint `URL` are kept completely safe out of source control. A strict local `.gitignore` rule is configured to permanently ignore `.env`, virtual environment folders (`venv/`), system artifacts (`.DS_Store`), and compiled Python paths (`__pycache__/`). When migrating this to production on PythonAnywhere, these keys are securely injected directly via the provider's native environment setup rather than storing hardcoded text configurations.
+### Credential Management
 
-### Access Control & Validation
-The application functions as a completely stateless translation pipe—it ingests text via a POST request to `/translate`, requests a transformation from the API broker, and immediately drops the data from server memory once resolved. While standard client-side text assignments protect the frontend against basic DOM XSS loops, the backend endpoints are currently unauthenticated and open. 
+- RapidAPI credentials are loaded securely through environment variables using `python-dotenv`.
+- Sensitive configuration values remain outside the source code and are excluded from version control through `.gitignore`.
+- When deployed on PythonAnywhere, secrets are configured through the hosting environment rather than being hardcoded into the application.
+
+### Backend API Brokerage
+
+Instead of communicating directly with RapidAPI, the browser sends requests to the Flask backend. The backend attaches the required authentication headers before forwarding the request, ensuring API credentials are never exposed to clients.
+
+### Error Handling
+
+Outbound requests use `response.raise_for_status()` together with a five-second timeout to ensure failures are detected cleanly instead of allowing requests to hang indefinitely.
+
+### Stateless Request Processing
+
+Each translation request is processed independently and is not persisted after the response is returned. The backend simply receives the text, requests a translation from the external service, and sends the result back to the client.
 
 ---
 
-## 🚀 Future Polish
+## 🧠 What I Learned
 
-- [ ] **Rate Limiting:** Implement a package like `Flask-Limiter` on the `/translate` route to block automated scraper bots from spamming the broker and exhausting my RapidAPI quota.
-- [ ] **Server-Side Constraints:** Enforce strict character-length constraints on the backend payload validation to instantly reject oversized or malicious text inputs before executing outbound network calls.
-- [ ] **Cache Layer:** Introduce local translation caching or simple session storage logs to reduce duplicate API latency and cut down request costs.
+Building this project gave me practical experience with several backend development concepts:
+
+- Designing Flask routes that act as secure intermediaries between clients and external APIs.
+- Working with JSON payloads using `request.get_json()` and `jsonify()` to exchange structured data between JavaScript and Python.
+- Improving HTTP error handling by combining `response.raise_for_status()` with explicit request timeouts.
+- Separating configuration from application logic by loading sensitive values from environment variables instead of embedding them in source code.
+- Building asynchronous user interfaces using the Fetch API and `async`/`await` while keeping the page responsive.
+- Reducing duplicated template code by reusing shared Jinja components across multiple interface elements.
+
+---
+
+## 🚀 Future Improvements
+
+- [ ] Implement rate limiting on the `/translate` endpoint to reduce abuse and protect API quotas.
+- [ ] Add server-side input validation and character limits before forwarding requests to the translation service.
+- [ ] Introduce translation caching to reduce duplicate API calls and improve response times.
+- [ ] Store recent translations locally for easier access and a better user experience.
+- [ ] Expand automated testing for backend routes and API failure scenarios.
+
+---
+```
